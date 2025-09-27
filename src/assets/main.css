@@ -1,0 +1,19 @@
+@import 'flag-icons/css/flag-icons.min.css';
+@import "tailwindcss";
+
+/* Optional: ensure smooth font rendering across platforms */
+html {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Enforce dark theme app-wide */
+:root {
+  color-scheme: dark;
+}
+
+html, body, #app {
+  background-color: #171C26; /* matches theme colors.background */
+  color: #E2E8F0; /* matches theme colors.text-light */
+  min-height: 100%;
+}
