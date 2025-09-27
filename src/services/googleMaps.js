@@ -4,7 +4,7 @@ const API_KEY = import.meta.env.VITE_GOOGLE_MAP_API_KEY;
 const VERSION = '2.0.0';
 
 /**
- * Fetches nearby hospitals using Google Places API via Vite proxy to avoid CORS issues.
+ * Fetches nearby hospitals using Google Places API directly.
  * Falls back to mock data if API fails.
  * @returns {Promise<Array<Object>>} A list of hospital objects.
  */
@@ -14,10 +14,10 @@ export const getNearbyHospitals = async () => {
   const radius = 5000; // meters
 
   try {
-    // Use Vite proxy to avoid CORS issues
-    const proxyUrl = `/api/google-maps/place/nearbysearch/json?location=${lat},${lng}&radius=${radius}&type=hospital&key=${API_KEY}&t=${Date.now()}`;
-    console.log(`[${VERSION}] Fetching hospitals from proxy URL:`, proxyUrl);
-    const response = await fetch(proxyUrl);
+    // Call Google Places API directly
+    const apiUrl = `https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=${lat},${lng}&radius=${radius}&type=hospital&key=${API_KEY}&t=${Date.now()}`;
+    console.log(`[${VERSION}] Fetching hospitals from Google Places API:`, apiUrl);
+    const response = await fetch(apiUrl);
 
     if (!response.ok) {
       throw new Error(`Places API request failed with status ${response.status}`);
@@ -35,7 +35,7 @@ export const getNearbyHospitals = async () => {
       rating: place.rating || 0,
       isOpen: place.opening_hours ? place.opening_hours.open_now : undefined,
       photo: place.photos && place.photos[0] 
-        ? `/api/google-maps/place/photo?maxwidth=400&photoreference=${place.photos[0].photo_reference}&key=${API_KEY}`
+        ? `https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photoreference=${place.photos[0].photo_reference}&key=${API_KEY}`
         : null,
       mapUrl: `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(place.name)}&query_place_id=${place.place_id}`,
       phone: null,
